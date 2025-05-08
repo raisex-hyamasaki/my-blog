@@ -58,12 +58,17 @@ export default function ArticleDetail({ article }: Props) {
         {content}
       </ReactMarkdown>
 
-      {/* 下部にも戻るボタン（任意） */}
+      {/* 下部にも戻るボタン */}
       <Link href="/" className="inline-block mt-6">
         <button className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-700">
           ← 記事一覧に戻る
         </button>
       </Link>
+
+      {/* ✅ フッター */}
+      <footer className="text-center text-gray-400 text-sm mt-12">
+        © 2024 raisex, LLC. All rights reserved.
+      </footer>
     </main>
   )
 }
