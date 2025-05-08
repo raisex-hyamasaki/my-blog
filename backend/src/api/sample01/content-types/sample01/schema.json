@@ -1,0 +1,21 @@
+{
+  "kind": "singleType",
+  "collectionName": "sample01s",
+  "info": {
+    "singularName": "sample01",
+    "pluralName": "sample01s",
+    "displayName": "Sample01",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "content": {
+      "type": "text"
+    }
+  }
+}
