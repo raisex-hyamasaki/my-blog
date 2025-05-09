@@ -43,131 +43,92 @@ export default function ArticleDetail({ article }: Props) {
   const { title, content, updatedAt } = article
 
   return (
-    <main className="px-4 sm:px-6 lg:px-8 py-8 max-w-4xl mx-auto">
-      <div className="mb-4">
+    <main className="px-6 sm:px-8 lg:px-12 py-10 max-w-3xl mx-auto">
+      <div className="mb-6">
         <Link href="/" className="inline-block">
-          <button className="text-sm px-3 py-1 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition">
+          <button className="text-sm px-3 py-1 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition">
             ← 記事一覧に戻る
           </button>
         </Link>
       </div>
 
-      <div className="mb-6 text-left">
-        <h1 className="text-3xl sm:text-5xl font-extrabold break-words">{title}</h1>
-        <p className="text-sm text-gray-500 mt-2">
-          投稿更新日: {new Date(updatedAt).toLocaleString()}
-        </p>
-      </div>
+      <article>
+        <header className="mb-8">
+          <h1 className="text-4xl sm:text-5xl font-bold leading-tight tracking-tight">
+            {title}
+          </h1>
+          <p className="text-sm text-gray-500 mt-2">
+            投稿更新日: {new Date(updatedAt).toLocaleString()}
+          </p>
+        </header>
 
-      <div className="prose prose-lg max-w-none mx-auto">
-        <ReactMarkdown
-          remarkPlugins={[remarkGfm]}
-          components={{
-            img: ({ ...props }) => (
-              <img
-                {...props}
-                className="mx-auto my-6 rounded shadow w-auto h-auto max-w-full"
-                alt={props.alt ?? '画像'}
-              />
-            ),
-            code({ inline, className, children, ...props }) {
-              if (inline) {
-                return (
-                  <code
-                    {...props}
-                    style={{
-                      backgroundColor: '#FEF3C7',
-                      color: '#B45309',
-                      padding: '0.2rem 0.4rem',
-                      borderRadius: '0.25rem',
-                      fontFamily: 'monospace',
-                      fontSize: '0.875rem',
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
-                    {children}
-                  </code>
-                )
-              } else {
-                return (
-                  <code className={`${className || ''} bg-transparent text-sm font-mono`} {...props}>
-                    {children}
-                  </code>
-                )
-              }
-            },
-            pre({ children }) {
-              const childProps = (children as any)?.props || {}
-              return (
-                <div className="relative my-4 bg-gray-900 text-white rounded-md overflow-auto">
-                  <button className="copy-button absolute top-2 right-2 px-2 py-1 text-xs bg-gray-700 rounded hover:bg-gray-600 transition">
-                    📋 Copy
-                  </button>
-                  <pre className="p-4 text-sm">
-                    <code className={childProps.className}>{childProps.children}</code>
-                  </pre>
-                </div>
-              )
-            },
-            p({ children }) {
-              const child = children?.[0]
-              const isRecruitLink =
-                typeof child === 'object' &&
-                child !== null &&
-                'props' in child &&
-                child.props?.href === 'https://en-gage.net/raisex_jobs/'
-
-              if (isRecruitLink) {
-                const href = child.props.href
-                return (
-                  <div className="my-6 border rounded-lg shadow hover:shadow-lg transition overflow-hidden">
-                    <a
-                      href={href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex flex-col sm:flex-row items-stretch no-underline"
+        <section className="prose prose-neutral prose-lg max-w-none">
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
+            components={{
+              img: ({ ...props }) => (
+                <img
+                  {...props}
+                  className="mx-auto my-6 rounded shadow-md w-auto h-auto max-w-full"
+                  alt={props.alt ?? '画像'}
+                />
+              ),
+              code({ inline, className, children, ...props }) {
+                if (inline) {
+                  return (
+                    <code
+                      {...props}
+                      style={{
+                        backgroundColor: '#fff8b3',
+                        color: '#111',
+                        padding: '0.2rem 0.4rem',
+                        borderRadius: '0.3rem',
+                        fontFamily: 'monospace',
+                        fontSize: '0.85rem',
+                      }}
                     >
-                      <div className="sm:w-2/3 p-4">
-                        <h3 className="text-lg font-bold mb-1 text-gray-800">
-                          合同会社raisexの採用・求人情報 - engage
-                        </h3>
-                        <p className="text-sm text-gray-600">私たちと一緒に働きませんか？</p>
-                        <p className="text-sm text-blue-500 mt-1">{href}</p>
-                      </div>
-                      <div className="sm:w-1/3 h-40 sm:h-auto relative">
-                        <img
-                          src="/recruit-banner.jpg"
-                          alt="採用バナー"
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                    </a>
+                      {children}
+                    </code>
+                  )
+                } else {
+                  return (
+                    <code className={`${className || ''} bg-transparent text-sm font-mono`} {...props}>
+                      {children}
+                    </code>
+                  )
+                }
+              },
+              pre({ children }) {
+                return (
+                  <div className="relative my-6 bg-gray-900 text-white rounded-lg overflow-auto">
+                    <button className="copy-button absolute top-2 right-2 px-2 py-1 text-xs bg-gray-700 rounded hover:bg-gray-600">
+                      📋 Copy
+                    </button>
+                    <pre className="p-4 text-sm">{children}</pre>
                   </div>
                 )
-              }
+              },
+              a({ href, children, ...props }) {
+                return (
+                  <a
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 underline"
+                    {...props}
+                  >
+                    {children}
+                  </a>
+                )
+              },
+            }}
+          >
+            {content}
+          </ReactMarkdown>
+        </section>
+      </article>
 
-              return <p>{children}</p>
-            },
-            a({ href, children, ...props }) {
-              return (
-                <a
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 underline"
-                  {...props}
-                >
-                  {children}
-                </a>
-              )
-            },
-          }}
-        >
-          {content}
-        </ReactMarkdown>
-      </div>
-
-      <div className="text-center mt-6">
+      <div className="text-center mt-10">
         <Link href="/" className="inline-block">
           <button className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-700">
             ← 記事一覧に戻る
