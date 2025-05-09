@@ -1,5 +1,5 @@
 // pages/index.tsx
-// 記事一覧ページ（サムネイル/リスト切替）
+// 記事一覧ページ（サムネイル/リスト切替、投稿更新日のみ表示）
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
@@ -101,11 +101,8 @@ export default function Home() {
               )}
               <div className="p-4">
                 <h2 className="text-lg font-semibold text-blue-600 mb-2">{article.title}</h2>
-                <p className="text-sm text-gray-600">
-                  投稿日: {article.publishedDate ? new Date(article.publishedDate).toLocaleString() : '不明'}
-                </p>
                 <p className="text-sm text-gray-500">
-                  最終更新日: {article.updatedAt ? new Date(article.updatedAt).toLocaleString() : '不明'}
+                  投稿更新日: {article.updatedAt ? new Date(article.updatedAt).toLocaleString() : '不明'}
                 </p>
               </div>
             </Link>
@@ -118,11 +115,8 @@ export default function Home() {
               <Link href={`/articles/${article.documentId}`}>
                 <h2 className="text-xl font-semibold text-blue-600 hover:underline">{article.title}</h2>
               </Link>
-              <p className="text-gray-600 mt-1">
-                投稿日: {article.publishedDate ? new Date(article.publishedDate).toLocaleString() : '不明'}
-              </p>
-              <p className="text-gray-500 text-sm">
-                最終更新日: {article.updatedAt ? new Date(article.updatedAt).toLocaleString() : '不明'}
+              <p className="text-gray-500 text-sm mt-1">
+                投稿更新日: {article.updatedAt ? new Date(article.updatedAt).toLocaleString() : '不明'}
               </p>
             </li>
           ))}
