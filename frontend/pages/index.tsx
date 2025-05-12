@@ -1,5 +1,5 @@
 // pages/index.tsx
-// 記事一覧ページ（サムネイル/リスト切替、投稿更新日のみ表示）
+// 記事一覧ページ（サムネイル/リスト切替、投稿更新日とタグを表示）
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
@@ -45,6 +45,19 @@ export default function Home() {
       setCurrentPage(newPage)
     }
   }
+
+  const renderTags = (tags: any[]) => (
+    <div className="flex flex-wrap gap-1 mt-2">
+      {tags.map((tag) => (
+        <span
+          key={tag.id}
+          className="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-1 rounded"
+        >
+          {tag.name}
+        </span>
+      ))}
+    </div>
+  )
 
   return (
     <main className="max-w-6xl mx-auto p-4 sm:p-8">
@@ -104,6 +117,7 @@ export default function Home() {
                 <p className="text-sm text-gray-500">
                   投稿更新日: {article.updatedAt ? new Date(article.updatedAt).toLocaleString() : '不明'}
                 </p>
+                {Array.isArray(article.tags) && renderTags(article.tags)}
               </div>
             </Link>
           ))}
@@ -118,6 +132,7 @@ export default function Home() {
               <p className="text-gray-500 text-sm mt-1">
                 投稿更新日: {article.updatedAt ? new Date(article.updatedAt).toLocaleString() : '不明'}
               </p>
+              {Array.isArray(article.tags) && renderTags(article.tags)}
             </li>
           ))}
         </ul>
