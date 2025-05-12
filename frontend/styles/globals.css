@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ✅ Markdown 内のインラインコードのみスタイル適用 */
+.prose code:not(pre code) {
+  background-color: #fef08a !important; /* bg-yellow-200 */
+  color: #1f2937 !important;            /* text-gray-800 */
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.25rem;
+  font-size: 0.85rem;
+  font-family: monospace;
+}
