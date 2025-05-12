@@ -177,7 +177,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
 
   try {
     const res = await fetch(
-      `http://localhost:1337/api/articles?filters[documentId][$eq]=${id}&populate=tags`
+      `http://localhost:1337/api/articles?filters[documentId][$eq]=${id}&populate[tags]=true`
     )
     const json = await res.json()
 
@@ -186,12 +186,11 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
     }
 
     const item = json.data[0]
-    const attributes = item.attributes ?? item // ← Strapi v5 用に対応
 
-    const tagList = Array.isArray(attributes.tags?.data)
-      ? attributes.tags.data.map((tag: any) => ({
+    const tagList = Array.isArray(item.tags)
+      ? item.tags.map((tag: any) => ({
           id: tag.id,
-          name: tag.attributes.name,
+          name: tag.name,
         }))
       : []
 
@@ -199,10 +198,10 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
       props: {
         article: {
           id: item.id,
-          title: attributes.title,
-          content: attributes.content,
-          publishedAt: attributes.publishedAt,
-          updatedAt: attributes.updatedAt,
+          title: item.title,
+          content: item.content,
+          publishedAt: item.publishedAt,
+          updatedAt: item.updatedAt,
           tags: tagList,
         },
       },
