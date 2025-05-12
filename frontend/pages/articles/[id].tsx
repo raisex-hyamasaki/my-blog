@@ -1,12 +1,13 @@
 // pages/articles/[id].tsx
-// 記事詳細ページ（documentIdで取得）
 // Markdown表示（画像中央寄せ＋レスポンシブ対応＋原寸超え防止）
 // 投稿更新日とタグ表示に対応（Strapi v5構造対応）
+// インラインコードに黄色背景＋黒文字対応済み（CSSで補強）
 
 import { GetServerSideProps, GetServerSidePropsContext } from 'next'
 import Link from 'next/link'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import rehypeRaw from 'rehype-raw'
 import { useEffect } from 'react'
 
 type Tag = {
@@ -94,6 +95,7 @@ export default function ArticleDetail({ article }: Props) {
         <section className="prose prose-neutral prose-lg max-w-none">
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
+            rehypePlugins={[rehypeRaw]}
             components={{
               img: ({ ...props }) => (
                 <img
@@ -102,16 +104,16 @@ export default function ArticleDetail({ article }: Props) {
                   alt={props.alt ?? '画像'}
                 />
               ),
-              code({ inline, className, children, ...props }) {
+              code({ inline, children, className, ...props }) {
                 if (inline) {
                   return (
                     <code
                       {...props}
                       style={{
-                        backgroundColor: '#fff8b3',
-                        color: '#111',
+                        backgroundColor: '#fef08a', // yellow for inline only
+                        color: '#1f2937',
                         padding: '0.2rem 0.4rem',
-                        borderRadius: '0.3rem',
+                        borderRadius: '0.25rem',
                         fontFamily: 'monospace',
                         fontSize: '0.85rem',
                       }}
@@ -119,16 +121,16 @@ export default function ArticleDetail({ article }: Props) {
                       {children}
                     </code>
                   )
-                } else {
-                  return (
-                    <code
-                      className={`${className || ''} bg-transparent text-sm font-mono`}
-                      {...props}
-                    >
-                      {children}
-                    </code>
-                  )
                 }
+                // 🚫 Remove background style from block code
+                return (
+                  <code
+                    className={`${className || ''} text-sm font-mono`}
+                    {...props}
+                  >
+                    {children}
+                  </code>
+                )
               },
               pre({ children }) {
                 return (
