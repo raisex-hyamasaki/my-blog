@@ -10,13 +10,11 @@ Icon
 .Trashes
 ._*
 
-
 ############################
 # Linux
 ############################
 
 *~
-
 
 ############################
 # Windows
@@ -30,7 +28,6 @@ $RECYCLE.BIN/
 *.msi
 *.msm
 *.msp
-
 
 ############################
 # Packages
@@ -60,7 +57,6 @@ $RECYCLE.BIN/
 *.out
 *.pid
 
-
 ############################
 # Logs and databases
 ############################
@@ -70,7 +66,6 @@ $RECYCLE.BIN/
 *.sql
 *.sqlite
 *.sqlite3
-
 
 ############################
 # Misc.
@@ -106,6 +101,26 @@ dist
 build
 
 ############################
+# Next.js
+############################
+
+.next/
+frontend/.next/
+.turbo/
+frontend/.turbo/
+
+############################
+# Environment files
+############################
+
+.env
+.env.local
+.env.production
+.env.development
+.env.staging
+.env.*.local
+
+############################
 # Package managers
 ############################
 
@@ -129,7 +144,6 @@ coverage
 # Strapi
 ############################
 
-.env
 license.txt
 exports
 .strapi
