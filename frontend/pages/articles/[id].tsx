@@ -112,7 +112,10 @@ export default function ArticleDetail({ article }: Props) {
                   )
                 } else {
                   return (
-                    <code className={`${className || ''} bg-transparent text-sm font-mono`} {...props}>
+                    <code
+                      className={`${className || ''} bg-transparent text-sm font-mono`}
+                      {...props}
+                    >
                       {children}
                     </code>
                   )
@@ -183,9 +186,10 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
     }
 
     const item = json.data[0]
+    const attributes = item.attributes ?? item // ← Strapi v5 用に対応
 
-    const tagList = Array.isArray(item.tags?.data)
-      ? item.tags.data.map((tag: any) => ({
+    const tagList = Array.isArray(attributes.tags?.data)
+      ? attributes.tags.data.map((tag: any) => ({
           id: tag.id,
           name: tag.attributes.name,
         }))
@@ -195,10 +199,10 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
       props: {
         article: {
           id: item.id,
-          title: item.title,
-          content: item.content,
-          publishedAt: item.publishedAt,
-          updatedAt: item.updatedAt,
+          title: attributes.title,
+          content: attributes.content,
+          publishedAt: attributes.publishedAt,
+          updatedAt: attributes.updatedAt,
           tags: tagList,
         },
       },
