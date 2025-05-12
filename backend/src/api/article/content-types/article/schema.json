@@ -17,15 +17,6 @@
     "content": {
       "type": "text"
     },
-    "publishedDate": {
-      "type": "datetime"
-    },
-    "categories": {
-      "type": "string"
-    },
-    "tags": {
-      "type": "string"
-    },
     "thumbnail": {
       "type": "media",
       "multiple": false,
@@ -36,6 +27,12 @@
         "videos",
         "audios"
       ]
+    },
+    "tags": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::tag.tag",
+      "inversedBy": "articles"
     }
   }
 }

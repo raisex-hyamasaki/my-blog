@@ -1,7 +1,7 @@
 // pages/articles/[id].tsx
 // 記事詳細ページ（documentIdで取得）
 // Markdown表示（画像中央寄せ＋レスポンシブ対応＋原寸超え防止）
-// 投稿更新日のみ表示
+// 投稿更新日とタグ表示に対応（Strapi v5構造対応）
 
 import { GetServerSideProps, GetServerSidePropsContext } from 'next'
 import Link from 'next/link'
@@ -9,12 +9,18 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { useEffect } from 'react'
 
+type Tag = {
+  id: number
+  name: string
+}
+
 type Article = {
   id: number
   title: string
   content: string
   publishedAt: string
   updatedAt: string
+  tags?: Tag[]
 }
 
 type Props = {
@@ -40,7 +46,7 @@ export default function ArticleDetail({ article }: Props) {
 
   if (!article) return <p>記事が見つかりません</p>
 
-  const { title, content, updatedAt } = article
+  const { title, content, updatedAt, tags } = article
 
   return (
     <main className="px-6 sm:px-8 lg:px-12 py-10 max-w-3xl mx-auto">
@@ -57,6 +63,20 @@ export default function ArticleDetail({ article }: Props) {
           <h1 className="text-4xl sm:text-5xl font-bold leading-tight tracking-tight">
             {title}
           </h1>
+
+          {Array.isArray(tags) && tags.length > 0 && (
+            <div className="flex flex-wrap gap-2 mt-2">
+              {tags.map((tag) => (
+                <span
+                  key={tag.id}
+                  className="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-1 rounded"
+                >
+                  {tag.name}
+                </span>
+              ))}
+            </div>
+          )}
+
           <p className="text-sm text-gray-500 mt-2">
             投稿更新日: {new Date(updatedAt).toLocaleString()}
           </p>
@@ -154,7 +174,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
 
   try {
     const res = await fetch(
-      `http://localhost:1337/api/articles?filters[documentId][$eq]=${id}&populate=*`
+      `http://localhost:1337/api/articles?filters[documentId][$eq]=${id}&populate=tags`
     )
     const json = await res.json()
 
@@ -163,16 +183,23 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
     }
 
     const item = json.data[0]
-    const { title, content, publishedAt, updatedAt } = item
+
+    const tagList = Array.isArray(item.tags?.data)
+      ? item.tags.data.map((tag: any) => ({
+          id: tag.id,
+          name: tag.attributes.name,
+        }))
+      : []
 
     return {
       props: {
         article: {
           id: item.id,
-          title,
-          content,
-          publishedAt,
-          updatedAt,
+          title: item.title,
+          content: item.content,
+          publishedAt: item.publishedAt,
+          updatedAt: item.updatedAt,
+          tags: tagList,
         },
       },
     }

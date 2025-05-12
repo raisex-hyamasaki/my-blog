@@ -16,6 +16,8 @@
   },
   "dependencies": {
     "@strapi/plugin-cloud": "5.12.7",
+    "@strapi/plugin-color-picker": "^5.13.0",
+    "@strapi/plugin-documentation": "^5.13.0",
     "@strapi/plugin-users-permissions": "5.12.7",
     "@strapi/strapi": "5.12.7",
     "better-sqlite3": "11.3.0",
@@ -23,6 +25,10 @@
     "react-dom": "^18.0.0",
     "react-router-dom": "^6.0.0",
     "strapi-plugin-ja-pack": "^2.0.1",
+    "strapi-plugin-multi-select": "^2.1.1",
+    "strapi-plugin-preview-button": "^3.0.0",
+    "strapi-plugin-tagsinput": "^2.0.2",
+    "strapi-plugin-wysiwyg-react-md-editor": "^5.8.2",
     "styled-components": "^6.0.0"
   },
   "devDependencies": {
