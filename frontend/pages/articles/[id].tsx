@@ -21,6 +21,7 @@ type Article = {
   publishedAt: string
   updatedAt: string
   tags?: Tag[]
+  thumbnailUrl?: string
 }
 
 type Props = {
@@ -46,7 +47,7 @@ export default function ArticleDetail({ article }: Props) {
 
   if (!article) return <p>記事が見つかりません</p>
 
-  const { title, content, updatedAt, tags } = article
+  const { title, content, updatedAt, tags, thumbnailUrl } = article
 
   return (
     <main className="px-6 sm:px-8 lg:px-12 py-10 max-w-3xl mx-auto">
@@ -80,6 +81,14 @@ export default function ArticleDetail({ article }: Props) {
           <p className="text-sm text-gray-500 mt-2">
             投稿更新日: {new Date(updatedAt).toLocaleString()}
           </p>
+
+          {thumbnailUrl && (
+            <img
+              src={thumbnailUrl}
+              alt="記事のサムネイル"
+              className="mx-auto my-6 rounded shadow-md w-auto h-auto max-w-full"
+            />
+          )}
         </header>
 
         <section className="prose prose-neutral prose-lg max-w-none">
@@ -177,7 +186,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
 
   try {
     const res = await fetch(
-      `http://localhost:1337/api/articles?filters[documentId][$eq]=${id}&populate[tags]=true`
+      `http://localhost:1337/api/articles?filters[documentId][$eq]=${id}&populate[tags]=true&populate[thumbnail]=true`
     )
     const json = await res.json()
 
@@ -194,6 +203,10 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
         }))
       : []
 
+    const thumbnailUrl = item.thumbnail?.url
+      ? `http://localhost:1337${item.thumbnail.url}`
+      : undefined
+
     return {
       props: {
         article: {
@@ -203,6 +216,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
           publishedAt: item.publishedAt,
           updatedAt: item.updatedAt,
           tags: tagList,
+          thumbnailUrl,
         },
       },
     }
