@@ -2,6 +2,7 @@
 // Markdown表示（画像中央寄せ＋レスポンシブ対応＋原寸超え防止）
 // 投稿更新日とタグ表示に対応（Strapi v5構造対応）
 // インラインコードに黄色背景＋黒文字対応済み（CSSで補強）
+// 表をTailwind罫線スタイル付きで表示
 
 import { GetServerSideProps, GetServerSidePropsContext } from 'next'
 import Link from 'next/link'
@@ -110,7 +111,7 @@ export default function ArticleDetail({ article }: Props) {
                     <code
                       {...props}
                       style={{
-                        backgroundColor: '#fef08a', // yellow for inline only
+                        backgroundColor: '#fef08a',
                         color: '#1f2937',
                         padding: '0.2rem 0.4rem',
                         borderRadius: '0.25rem',
@@ -122,7 +123,6 @@ export default function ArticleDetail({ article }: Props) {
                     </code>
                   )
                 }
-                // 🚫 Remove background style from block code
                 return (
                   <code
                     className={`${className || ''} text-sm font-mono`}
@@ -154,6 +154,26 @@ export default function ArticleDetail({ article }: Props) {
                     {children}
                   </a>
                 )
+              },
+              table({ children }) {
+                return (
+                  <table className="table-auto border border-gray-300 w-full text-sm">
+                    {children}
+                  </table>
+                )
+              },
+              thead({ children }) {
+                return <thead className="bg-gray-100">{children}</thead>
+              },
+              th({ children }) {
+                return (
+                  <th className="border px-4 py-2 text-left font-semibold">
+                    {children}
+                  </th>
+                )
+              },
+              td({ children }) {
+                return <td className="border px-4 py-2">{children}</td>
               },
             }}
           >
