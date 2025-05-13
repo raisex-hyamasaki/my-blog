@@ -3,13 +3,14 @@
 // 投稿更新日とタグ表示に対応（Strapi v5構造対応）
 // インラインコードに黄色背景＋黒文字対応済み（CSSで補強）
 // 表をTailwind罫線スタイル付きで表示
+// モーダル風・原寸大対応
 
 import { GetServerSideProps, GetServerSidePropsContext } from 'next'
 import Link from 'next/link'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import rehypeRaw from 'rehype-raw'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 type Tag = {
   id: number
@@ -31,6 +32,8 @@ type Props = {
 }
 
 export default function ArticleDetail({ article }: Props) {
+  const [modalImage, setModalImage] = useState<string | null>(null)
+
   useEffect(() => {
     const buttons = document.querySelectorAll('.copy-button')
     buttons.forEach((btn) => {
@@ -52,7 +55,21 @@ export default function ArticleDetail({ article }: Props) {
   const { title, content, updatedAt, tags, thumbnailUrl } = article
 
   return (
-    <main className="px-6 sm:px-8 lg:px-12 py-10 max-w-3xl mx-auto">
+    <main className="px-6 sm:px-8 lg:px-12 py-10 max-w-3xl mx-auto relative">
+      {/* 拡大モーダル画像 */}
+      {modalImage && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center cursor-zoom-out"
+          onClick={() => setModalImage(null)}
+        >
+          <img
+            src={modalImage}
+            alt="拡大画像"
+            className="max-w-full max-h-full rounded-lg shadow-lg"
+          />
+        </div>
+      )}
+
       <div className="mb-6">
         <Link href="/" className="inline-block">
           <button className="text-sm px-3 py-1 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition">
@@ -98,11 +115,12 @@ export default function ArticleDetail({ article }: Props) {
             remarkPlugins={[remarkGfm]}
             rehypePlugins={[rehypeRaw]}
             components={{
-              img: ({ ...props }) => (
+              img: ({ src, alt }) => (
                 <img
-                  {...props}
-                  className="mx-auto my-6 rounded shadow-md w-auto h-auto max-w-full"
-                  alt={props.alt ?? '画像'}
+                  src={src ?? ''}
+                  alt={alt ?? '画像'}
+                  className="mx-auto my-6 rounded shadow-md w-auto h-auto max-w-full cursor-zoom-in"
+                  onClick={() => src && setModalImage(src)}
                 />
               ),
               code({ inline, children, className, ...props }) {
