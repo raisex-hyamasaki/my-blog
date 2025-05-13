@@ -3,7 +3,8 @@
 // 投稿更新日とタグ表示に対応（Strapi v5構造対応）
 // インラインコードに黄色背景＋黒文字対応済み（CSSで補強）
 // 表をTailwind罫線スタイル付きで表示
-// モーダル風・原寸大対応
+// モーダルウィンドウ・原寸大対応
+// ER図表示対応（Mermaid導入）
 
 import { GetServerSideProps, GetServerSidePropsContext } from 'next'
 import Link from 'next/link'
@@ -11,6 +12,9 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import rehypeRaw from 'rehype-raw'
 import { useEffect, useState } from 'react'
+import dynamic from 'next/dynamic'
+
+const Mermaid = dynamic(() => import('../../components/Mermaid'), { ssr: false })
 
 type Tag = {
   id: number
@@ -56,7 +60,7 @@ export default function ArticleDetail({ article }: Props) {
 
   return (
     <main className="px-6 sm:px-8 lg:px-12 py-10 max-w-3xl mx-auto relative">
-      {/* 拡大モーダル画像 */}
+      {/* モーダル画像 */}
       {modalImage && (
         <div
           className="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center cursor-zoom-out"
@@ -123,7 +127,7 @@ export default function ArticleDetail({ article }: Props) {
                   onClick={() => src && setModalImage(src)}
                 />
               ),
-              code({ inline, children, className, ...props }) {
+              code({ inline, children, className = '', ...props }) {
                 if (inline) {
                   return (
                     <code
@@ -141,11 +145,14 @@ export default function ArticleDetail({ article }: Props) {
                     </code>
                   )
                 }
+
+                // Mermaid対応: ```mermaid ブロックの表示処理
+                if (className.trim() === 'language-mermaid') {
+                  return <Mermaid chart={String(children).trim()} />
+                }
+
                 return (
-                  <code
-                    className={`${className || ''} text-sm font-mono`}
-                    {...props}
-                  >
+                  <code className={`${className} text-sm font-mono`} {...props}>
                     {children}
                   </code>
                 )
