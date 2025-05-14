@@ -17,7 +17,9 @@ export default function Home() {
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const res = await fetch('http://localhost:1337/api/articles?populate=*')
+        const res = await fetch(
+          'http://localhost:1337/api/articles?populate[thumbnail]=true&populate[tags]=true&pagination[pageSize]=100000'
+        )
         const json = await res.json()
 
         console.log("Strapi API Response:", json)
