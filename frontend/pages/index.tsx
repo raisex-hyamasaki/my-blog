@@ -11,8 +11,7 @@ export default function Home() {
   const [articles, setArticles] = useState<any[]>([])
   const [viewMode, setViewMode] = useState<'card' | 'list'>('card')
   const [currentPage, setCurrentPage] = useState(1)
-
-  const totalPages = Math.ceil(articles.length / PAGE_SIZE)
+  const [searchQuery, setSearchQuery] = useState('')
 
   useEffect(() => {
     const fetchArticles = async () => {
@@ -21,8 +20,6 @@ export default function Home() {
           'http://localhost:1337/api/articles?populate[thumbnail]=true&populate[tags]=true&pagination[pageSize]=100000'
         )
         const json = await res.json()
-
-        console.log("Strapi API Response:", json)
 
         const sorted = (json.data || []).sort((a: any, b: any) => {
           const dateA = new Date(a.updatedAt).getTime()
@@ -39,7 +36,17 @@ export default function Home() {
     fetchArticles()
   }, [])
 
-  const paginatedArticles = articles.slice(
+  const filteredArticles = articles.filter((article: any) => {
+    const keyword = searchQuery.toLowerCase()
+    return (
+      article.title.toLowerCase().includes(keyword) ||
+      article.content?.toLowerCase().includes(keyword)
+    )
+  })
+
+  const totalPages = Math.ceil(filteredArticles.length / PAGE_SIZE)
+
+  const paginatedArticles = filteredArticles.slice(
     (currentPage - 1) * PAGE_SIZE,
     currentPage * PAGE_SIZE
   )
@@ -76,9 +83,22 @@ export default function Home() {
         />
       </div>
 
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">📝 レイズクロス Tech Blog</h1>
-        <div>
+      {/* タイトル・検索・表示切替ボタン */}
+      <div className="flex flex-wrap sm:flex-nowrap justify-between items-center mb-6 gap-4">
+        <h1 className="text-3xl font-bold whitespace-nowrap">📝 レイズクロス Tech Blog</h1>
+
+        <input
+          type="text"
+          placeholder="記事検索"
+          value={searchQuery}
+          onChange={(e) => {
+            setSearchQuery(e.target.value)
+            setCurrentPage(1)
+          }}
+          className="flex-grow sm:flex-grow-0 w-full sm:w-60 px-3 py-2 border rounded shadow-sm focus:outline-none focus:ring focus:border-blue-300 text-sm"
+        />
+
+        <div className="flex">
           <button
             onClick={() => setViewMode('card')}
             className={`px-3 py-1 text-sm rounded-l border ${
@@ -98,18 +118,11 @@ export default function Home() {
         </div>
       </div>
 
+      {/* 記事一覧 */}
       {viewMode === 'card' ? (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {paginatedArticles.map((article: any) => {
-            const {
-              id,
-              title,
-              updatedAt,
-              documentId,
-              thumbnail,
-              tags
-            } = article
-
+            const { id, title, updatedAt, documentId, thumbnail, tags } = article
             const imageUrl = thumbnail?.url
 
             return (
@@ -142,13 +155,7 @@ export default function Home() {
       ) : (
         <ul className="space-y-6">
           {paginatedArticles.map((article: any) => {
-            const {
-              id,
-              title,
-              updatedAt,
-              documentId,
-              tags
-            } = article
+            const { id, title, updatedAt, documentId, tags } = article
 
             return (
               <li key={id} className="border rounded-lg p-4 hover:shadow-md transition bg-white">
@@ -165,6 +172,7 @@ export default function Home() {
         </ul>
       )}
 
+      {/* ページネーション */}
       <div className="flex justify-center items-center mt-10 gap-4">
         <button
           onClick={() => handlePageChange(currentPage - 1)}
