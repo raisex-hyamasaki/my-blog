@@ -20,6 +20,8 @@ export default function Home() {
         const res = await fetch('http://localhost:1337/api/articles?populate=*')
         const json = await res.json()
 
+        console.log("Strapi API Response:", json)
+
         const sorted = (json.data || []).sort((a: any, b: any) => {
           const dateA = new Date(a.updatedAt).getTime()
           const dateB = new Date(b.updatedAt).getTime()
@@ -96,7 +98,7 @@ export default function Home() {
 
       {viewMode === 'card' ? (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {paginatedArticles.map((article) => (
+          {paginatedArticles.map((article: any) => (
             <Link
               key={article.id}
               href={`/articles/${article.documentId}`}
@@ -124,7 +126,7 @@ export default function Home() {
         </div>
       ) : (
         <ul className="space-y-6">
-          {paginatedArticles.map((article) => (
+          {paginatedArticles.map((article: any) => (
             <li key={article.id} className="border rounded-lg p-4 hover:shadow-md transition bg-white">
               <Link href={`/articles/${article.documentId}`}>
                 <h2 className="text-xl font-semibold text-blue-600 hover:underline">{article.title}</h2>
@@ -138,7 +140,6 @@ export default function Home() {
         </ul>
       )}
 
-      {/* ✅ ページネーション */}
       <div className="flex justify-center items-center mt-10 gap-4">
         <button
           onClick={() => handlePageChange(currentPage - 1)}
