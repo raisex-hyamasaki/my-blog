@@ -53,6 +53,17 @@ export default function ArticleDetail({ article }: Props) {
         }
       })
     })
+
+    const scriptId = 'engage-widget-script'
+    const existingScript = document.getElementById(scriptId)
+    if (existingScript) {
+      existingScript.remove()
+    }
+    const script = document.createElement('script')
+    script.src = 'https://en-gage.net/common_new/company_script/recruit/widget.js?v=74abd4d08c3f541ffc47d90ca4e4bec1babf87cd5ec5620798da6c97ecc886c7'
+    script.id = scriptId
+    script.async = true
+    document.body.appendChild(script)
   }, [])
 
   if (!article) return <p>記事が見つかりません</p>
@@ -61,7 +72,6 @@ export default function ArticleDetail({ article }: Props) {
 
   return (
     <main className="px-6 sm:px-8 lg:px-12 py-10 max-w-3xl mx-auto relative">
-      {/* モーダル画像 */}
       {modalImage && (
         <div
           className="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center cursor-zoom-out"
@@ -215,7 +225,6 @@ export default function ArticleDetail({ article }: Props) {
         </Link>
       </div>
 
-      {/* 採用バナー */}
       <div className="mt-16">
         <p className="text-center text-gray-700 text-base font-medium">
           合同会社raisexでは一緒に働く仲間を募集中です。
@@ -224,12 +233,14 @@ export default function ArticleDetail({ article }: Props) {
           ご興味のある方は以下の採用情報をご確認ください。
         </p>
         <div className="flex justify-center mt-4">
-          <div dangerouslySetInnerHTML={{
-            __html: `
-              <a href="" class="engage-recruit-widget" data-height="300" data-width="500" data-url="https://en-gage.net/raisex_jobs/widget/?banner=1" target="_blank"></a>
-              <script src="https://en-gage.net/common_new/company_script/recruit/widget.js?v=74abd4d08c3f541ffc47d90ca4e4bec1babf87cd5ec5620798da6c97ecc886c7"></script>
-            `
-          }} />
+          <a
+            href=""
+            className="engage-recruit-widget"
+            data-height="300"
+            data-width="500"
+            data-url="https://en-gage.net/raisex_jobs/widget/?banner=1"
+            target="_blank"
+          />
         </div>
       </div>
 
