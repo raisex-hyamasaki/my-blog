@@ -5,6 +5,7 @@
 // 表をTailwind罫線スタイル付きで表示
 // モーダルウィンドウ・原寸大対応
 // ER図表示対応（Mermaid導入）
+// 求人バナー表示対応
 
 import { GetServerSideProps, GetServerSidePropsContext } from 'next'
 import Link from 'next/link'
@@ -146,7 +147,6 @@ export default function ArticleDetail({ article }: Props) {
                   )
                 }
 
-                // Mermaid対応: ```mermaid ブロックの表示処理
                 if (className.trim() === 'language-mermaid') {
                   return <Mermaid chart={String(children).trim()} />
                 }
@@ -213,6 +213,24 @@ export default function ArticleDetail({ article }: Props) {
             ← 記事一覧に戻る
           </button>
         </Link>
+      </div>
+
+      {/* 採用バナー */}
+      <div className="mt-16">
+        <p className="text-center text-gray-700 text-base font-medium">
+          合同会社raisexでは一緒に働く仲間を募集中です。
+        </p>
+        <p className="text-center text-gray-600 text-sm mt-1">
+          ご興味のある方は以下の採用情報をご確認ください。
+        </p>
+        <div className="flex justify-center mt-4">
+          <div dangerouslySetInnerHTML={{
+            __html: `
+              <a href="" class="engage-recruit-widget" data-height="300" data-width="500" data-url="https://en-gage.net/raisex_jobs/widget/?banner=1" target="_blank"></a>
+              <script src="https://en-gage.net/common_new/company_script/recruit/widget.js?v=74abd4d08c3f541ffc47d90ca4e4bec1babf87cd5ec5620798da6c97ecc886c7"></script>
+            `
+          }} />
+        </div>
       </div>
 
       <footer className="text-center text-gray-400 text-sm mt-12">
