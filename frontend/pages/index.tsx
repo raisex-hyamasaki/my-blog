@@ -98,45 +98,68 @@ export default function Home() {
 
       {viewMode === 'card' ? (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {paginatedArticles.map((article: any) => (
-            <Link
-              key={article.id}
-              href={`/articles/${article.documentId}`}
-              className="block border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition bg-white"
-            >
-              {article.thumbnail?.url && (
-                <div className="w-full h-40 relative">
-                  <Image
-                    src={`http://localhost:1337${article.thumbnail.url}`}
-                    alt={article.title}
-                    layout="fill"
-                    objectFit="cover"
-                  />
+          {paginatedArticles.map((article: any) => {
+            const {
+              id,
+              title,
+              updatedAt,
+              documentId,
+              thumbnail,
+              tags
+            } = article
+
+            const imageUrl = thumbnail?.url
+
+            return (
+              <Link
+                key={id}
+                href={`/articles/${documentId}`}
+                className="block border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition bg-white"
+              >
+                {imageUrl && (
+                  <div className="w-full h-40 relative">
+                    <Image
+                      src={`http://localhost:1337${imageUrl}`}
+                      alt={title}
+                      layout="fill"
+                      objectFit="cover"
+                    />
+                  </div>
+                )}
+                <div className="p-4">
+                  <h2 className="text-lg font-semibold text-blue-600 mb-2">{title}</h2>
+                  <p className="text-sm text-gray-500">
+                    投稿更新日: {updatedAt ? new Date(updatedAt).toLocaleString() : '不明'}
+                  </p>
+                  {Array.isArray(tags) && renderTags(tags)}
                 </div>
-              )}
-              <div className="p-4">
-                <h2 className="text-lg font-semibold text-blue-600 mb-2">{article.title}</h2>
-                <p className="text-sm text-gray-500">
-                  投稿更新日: {article.updatedAt ? new Date(article.updatedAt).toLocaleString() : '不明'}
-                </p>
-                {Array.isArray(article.tags) && renderTags(article.tags)}
-              </div>
-            </Link>
-          ))}
+              </Link>
+            )
+          })}
         </div>
       ) : (
         <ul className="space-y-6">
-          {paginatedArticles.map((article: any) => (
-            <li key={article.id} className="border rounded-lg p-4 hover:shadow-md transition bg-white">
-              <Link href={`/articles/${article.documentId}`}>
-                <h2 className="text-xl font-semibold text-blue-600 hover:underline">{article.title}</h2>
-              </Link>
-              <p className="text-gray-500 text-sm mt-1">
-                投稿更新日: {article.updatedAt ? new Date(article.updatedAt).toLocaleString() : '不明'}
-              </p>
-              {Array.isArray(article.tags) && renderTags(article.tags)}
-            </li>
-          ))}
+          {paginatedArticles.map((article: any) => {
+            const {
+              id,
+              title,
+              updatedAt,
+              documentId,
+              tags
+            } = article
+
+            return (
+              <li key={id} className="border rounded-lg p-4 hover:shadow-md transition bg-white">
+                <Link href={`/articles/${documentId}`}>
+                  <h2 className="text-xl font-semibold text-blue-600 hover:underline">{title}</h2>
+                </Link>
+                <p className="text-gray-500 text-sm mt-1">
+                  投稿更新日: {updatedAt ? new Date(updatedAt).toLocaleString() : '不明'}
+                </p>
+                {Array.isArray(tags) && renderTags(tags)}
+              </li>
+            )
+          })}
         </ul>
       )}
 
