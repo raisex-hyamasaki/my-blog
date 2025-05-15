@@ -105,16 +105,15 @@ export default function ArticleDetail({ article }: Props) {
           />
         </div>
       )}
-
-      {/* 固定戻るボタン + SNSシェア */}
+      {/* 固定ヘッダー + SNSシェア */}
       <div className="fixed top-0 left-0 w-full bg-white border-b z-40 shadow-sm">
         <div className="max-w-3xl mx-auto px-4 py-2 flex items-center justify-between">
-          <Link href="/">
-            <button className="text-sm px-3 py-1 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition">
-              ← 記事一覧に戻る
-            </button>
+          {/* タイトルリンクに変更 */}
+          <Link href="/" className="text-blue-600 hover:text-gray-700 text-lg font-semibold transition-colors">
+            📝 レイズクロス Tech Blog
           </Link>
-          <div className="flex gap-4 mt-4">
+
+          <div className="flex gap-4 mt-1">
             <a href={getShareUrl('twitter', url, title)} target="_blank" rel="noopener noreferrer">
               <img src="/icons/x.svg" alt="X" className="w-8 h-8" />
             </a>
