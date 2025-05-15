@@ -85,13 +85,18 @@ export default function ArticleDetail({ article }: Props) {
         </div>
       )}
 
-      <div className="mb-6">
-        <Link href="/" className="inline-block">
-          <button className="text-sm px-3 py-1 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition">
-            ← 記事一覧に戻る
-          </button>
-        </Link>
+      {/* 固定戻るボタン */}
+      <div className="fixed top-0 left-0 w-full bg-white border-b z-40 shadow-sm">
+        <div className="max-w-3xl mx-auto px-4 py-2">
+          <Link href="/">
+            <button className="text-sm px-3 py-1 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition">
+              ← 記事一覧に戻る
+            </button>
+          </Link>
+        </div>
       </div>
+
+      <div className="h-14" /> {/* 固定ヘッダー分のスペース */}
 
       <article>
         <header className="mb-8">
@@ -216,14 +221,6 @@ export default function ArticleDetail({ article }: Props) {
           </ReactMarkdown>
         </section>
       </article>
-
-      <div className="text-center mt-10">
-        <Link href="/" className="inline-block">
-          <button className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-700">
-            ← 記事一覧に戻る
-          </button>
-        </Link>
-      </div>
 
       <div className="mt-16">
         <p className="text-center text-gray-700 text-base font-medium">
