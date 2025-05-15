@@ -256,6 +256,15 @@ export default function ArticleDetail({ article }: Props) {
         </section>
       </article>
 
+      {/* ← 記事一覧に戻る */}
+      <div className="mt-12 flex justify-center">
+        <Link href="/">
+          <button className="text-sm px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 transition">
+            ← 記事一覧に戻る
+          </button>
+        </Link>
+      </div>
+
       <div className="mt-16">
         <p className="text-center text-gray-700 text-base font-medium">
           合同会社raisexでは一緒に働く仲間を募集中です。
