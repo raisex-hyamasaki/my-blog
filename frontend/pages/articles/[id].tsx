@@ -5,6 +5,7 @@
 // モーダルウィンドウ・原寸大対応
 // ER図表示対応（Mermaid導入）
 // 求人バナー表示対応
+// SNSシェアボタン表示対応
 
 import { GetServerSideProps, GetServerSidePropsContext } from 'next'
 import Link from 'next/link'
@@ -27,6 +28,8 @@ function getShareUrl(base: string, url: string, title?: string) {
       return `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`
     case 'line':
       return `https://social-plugins.line.me/lineit/share?url=${encodedUrl}`
+    case 'hatena':
+      return `https://b.hatena.ne.jp/entry/panel/?url=${encodedUrl}`
     default:
       return '#'
   }
@@ -120,6 +123,9 @@ export default function ArticleDetail({ article }: Props) {
             </a>
             <a href={getShareUrl('line', url)} target="_blank" rel="noopener noreferrer">
               <img src="/icons/line.svg" alt="LINE" className="w-8 h-8" />
+            </a>
+            <a href={getShareUrl('hatena', url)} target="_blank" rel="noopener noreferrer">
+              <img src="/icons/hatena.svg" alt="はてなブックマーク" className="w-8 h-8" />
             </a>
           </div>
         </div>
