@@ -16,8 +16,11 @@ export default function Home() {
   useEffect(() => {
     const fetchArticles = async () => {
       try {
+        // 記事一覧APIのURL,１ページあたりの件数を9999999件に設定
+        // これにより全件取得できる
+        // ただし、実際の運用では適切なページネーションを使用することを推奨
         const res = await fetch(
-          'http://localhost:1337/api/articles?populate[thumbnail]=true&populate[tags]=true&pagination[pageSize]=100000'
+          'http://localhost:1337/api/articles?populate[thumbnail]=true&populate[tags]=true&pagination[pageSize]=9999999'
         )
         const json = await res.json()
 
