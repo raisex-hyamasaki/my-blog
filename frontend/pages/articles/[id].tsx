@@ -2,7 +2,6 @@
 // Markdown表示（画像中央寄せ＋レスポンシブ対応＋原寸超え防止）
 // 投稿更新日とタグ表示に対応（Strapi v5構造対応）
 // インラインコードに黄色背景＋黒文字対応済み（CSSで補強）
-// 表をTailwind罫線スタイル付きで表示
 // モーダルウィンドウ・原寸大対応
 // ER図表示対応（Mermaid導入）
 // 求人バナー表示対応
@@ -14,8 +13,24 @@ import remarkGfm from 'remark-gfm'
 import rehypeRaw from 'rehype-raw'
 import { useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
+import { useRouter } from 'next/router'
 
 const Mermaid = dynamic(() => import('../../components/Mermaid'), { ssr: false })
+
+function getShareUrl(base: string, url: string, title?: string) {
+  const encodedUrl = encodeURIComponent(url)
+  const encodedTitle = title ? encodeURIComponent(title) : ''
+  switch (base) {
+    case 'twitter':
+      return `https://twitter.com/share?url=${encodedUrl}&text=${encodedTitle}`
+    case 'facebook':
+      return `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`
+    case 'line':
+      return `https://social-plugins.line.me/lineit/share?url=${encodedUrl}`
+    default:
+      return '#'
+  }
+}
 
 type Tag = {
   id: number
@@ -38,8 +53,12 @@ type Props = {
 
 export default function ArticleDetail({ article }: Props) {
   const [modalImage, setModalImage] = useState<string | null>(null)
+  const [url, setUrl] = useState('')
+  const router = useRouter()
 
   useEffect(() => {
+    setUrl(window.location.href)
+
     const buttons = document.querySelectorAll('.copy-button')
     buttons.forEach((btn) => {
       btn.addEventListener('click', () => {
@@ -56,9 +75,8 @@ export default function ArticleDetail({ article }: Props) {
 
     const scriptId = 'engage-widget-script'
     const existingScript = document.getElementById(scriptId)
-    if (existingScript) {
-      existingScript.remove()
-    }
+    if (existingScript) existingScript.remove()
+
     const script = document.createElement('script')
     script.src = 'https://en-gage.net/common_new/company_script/recruit/widget.js?v=74abd4d08c3f541ffc47d90ca4e4bec1babf87cd5ec5620798da6c97ecc886c7'
     script.id = scriptId
@@ -85,18 +103,29 @@ export default function ArticleDetail({ article }: Props) {
         </div>
       )}
 
-      {/* 固定戻るボタン */}
+      {/* 固定戻るボタン + SNSシェア */}
       <div className="fixed top-0 left-0 w-full bg-white border-b z-40 shadow-sm">
-        <div className="max-w-3xl mx-auto px-4 py-2">
+        <div className="max-w-3xl mx-auto px-4 py-2 flex items-center justify-between">
           <Link href="/">
             <button className="text-sm px-3 py-1 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition">
               ← 記事一覧に戻る
             </button>
           </Link>
+          <div className="flex gap-4 mt-4">
+            <a href={getShareUrl('twitter', url, title)} target="_blank" rel="noopener noreferrer">
+              <img src="/icons/x.svg" alt="X" className="w-8 h-8" />
+            </a>
+            <a href={getShareUrl('facebook', url)} target="_blank" rel="noopener noreferrer">
+              <img src="/icons/facebook.svg" alt="Facebook" className="w-8 h-8" />
+            </a>
+            <a href={getShareUrl('line', url)} target="_blank" rel="noopener noreferrer">
+              <img src="/icons/line.svg" alt="LINE" className="w-8 h-8" />
+            </a>
+          </div>
         </div>
       </div>
 
-      <div className="h-14" /> {/* 固定ヘッダー分のスペース */}
+      <div className="h-14" />
 
       <article>
         <header className="mb-8">
