@@ -119,6 +119,7 @@ frontend/.turbo/
 .env.development
 .env.staging
 .env.*.local
+.env.example
 
 ############################
 # Package managers

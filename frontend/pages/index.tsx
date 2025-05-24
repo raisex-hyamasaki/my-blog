@@ -1,45 +1,30 @@
 // pages/index.tsx
-// 記事一覧ページ（サムネイル/リスト切替、投稿更新日とタグを表示）
+// 記事一覧ページ（サムネイル/リスト切替、投稿更新日とタグ表示）
+// getStaticProps による静的生成対応（Strapi v5 完全対応）
 
-import { useEffect, useState } from 'react'
+import { GetStaticProps } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
+import { useState } from 'react'
 
 const PAGE_SIZE = 15
 
-export default function Home() {
-  const [articles, setArticles] = useState<any[]>([])
+type Article = {
+  id: number
+  documentId: string | null
+  title: string
+  content: string
+  updatedAt: string
+  tags: { id: number; name: string }[]
+  thumbnail: { url: string | null }
+}
+
+export default function Home({ articles }: { articles: Article[] }) {
   const [viewMode, setViewMode] = useState<'card' | 'list'>('card')
   const [currentPage, setCurrentPage] = useState(1)
   const [searchQuery, setSearchQuery] = useState('')
 
-  useEffect(() => {
-    const fetchArticles = async () => {
-      try {
-        // 記事一覧APIのURL,１ページあたりの件数を9999999件に設定
-        // これにより全件取得できる
-        // ただし、実際の運用では適切なページネーションを使用することを推奨
-        const res = await fetch(
-          'http://localhost:1337/api/articles?populate[thumbnail]=true&populate[tags]=true&pagination[pageSize]=9999999'
-        )
-        const json = await res.json()
-
-        const sorted = (json.data || []).sort((a: any, b: any) => {
-          const dateA = new Date(a.updatedAt).getTime()
-          const dateB = new Date(b.updatedAt).getTime()
-          return dateB - dateA
-        })
-
-        setArticles(sorted)
-      } catch (err) {
-        console.error('記事の取得に失敗しました:', err)
-      }
-    }
-
-    fetchArticles()
-  }, [])
-
-  const filteredArticles = articles.filter((article: any) => {
+  const filteredArticles = articles.filter((article) => {
     const keyword = searchQuery.toLowerCase()
     return (
       article.title.toLowerCase().includes(keyword) ||
@@ -60,7 +45,7 @@ export default function Home() {
     }
   }
 
-  const renderTags = (tags: any[]) => (
+  const renderTags = (tags: { id: number; name: string }[]) => (
     <div className="flex flex-wrap gap-1 mt-2">
       {tags.map((tag) => (
         <span
@@ -86,7 +71,6 @@ export default function Home() {
         />
       </div>
 
-      {/* タイトル・検索・表示切替ボタン */}
       <div className="flex flex-wrap sm:flex-nowrap justify-between items-center mb-6 gap-4">
         <h1 className="text-3xl font-bold whitespace-nowrap">📝 レイズクロス Tech Blog</h1>
 
@@ -121,13 +105,11 @@ export default function Home() {
         </div>
       </div>
 
-      {/* 記事一覧 */}
       {viewMode === 'card' ? (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {paginatedArticles.map((article: any) => {
+          {paginatedArticles.map((article) => {
             const { id, title, updatedAt, documentId, thumbnail, tags } = article
             const imageUrl = thumbnail?.url
-
             return (
               <Link
                 key={id}
@@ -137,7 +119,7 @@ export default function Home() {
                 {imageUrl && (
                   <div className="w-full h-40 relative">
                     <Image
-                      src={`http://localhost:1337${imageUrl}`}
+                      src={imageUrl}
                       alt={title}
                       layout="fill"
                       objectFit="cover"
@@ -157,9 +139,8 @@ export default function Home() {
         </div>
       ) : (
         <ul className="space-y-6">
-          {paginatedArticles.map((article: any) => {
+          {paginatedArticles.map((article) => {
             const { id, title, updatedAt, documentId, tags } = article
-
             return (
               <li key={id} className="border rounded-lg p-4 hover:shadow-md transition bg-white">
                 <Link href={`/articles/${documentId}`}>
@@ -175,7 +156,6 @@ export default function Home() {
         </ul>
       )}
 
-      {/* ページネーション */}
       <div className="flex justify-center items-center mt-10 gap-4">
         <button
           onClick={() => handlePageChange(currentPage - 1)}
@@ -201,4 +181,38 @@ export default function Home() {
       </footer>
     </main>
   )
+}
+
+export const getStaticProps: GetStaticProps = async () => {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL
+  const res = await fetch(`${apiUrl}/api/articles?populate=thumbnail,tags&pagination[pageSize]=100`)
+  const json = await res.json()
+
+  const sorted: Article[] = (json.data || [])
+    .map((item: any) => {
+      const attr = item.attributes || {}
+      const thumbnailUrl = attr.thumbnail?.data?.attributes?.url ?? null
+      return {
+        id: item.id,
+        documentId: attr.documentId ?? null,
+        title: attr.title,
+        content: attr.content,
+        updatedAt: attr.updatedAt,
+        tags: attr.tags?.data?.map((tag: any) => ({
+          id: tag.id,
+          name: tag.attributes?.name || '',
+        })) || [],
+        thumbnail: {
+          url: thumbnailUrl ? `${apiUrl}${thumbnailUrl}` : null,
+        },
+      }
+    })
+    .filter((article: Article) => article.documentId !== null)
+    .sort((a: Article, b: Article) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
+
+  return {
+    props: {
+      articles: sorted,
+    },
+  }
 }

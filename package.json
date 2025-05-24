@@ -1,0 +1,15 @@
+{
+  "name": "my-blog",
+  "version": "1.0.0",
+  "description": "このプロジェクトは **Strapi v5**（ヘッドレスCMS）と **Next.js 14** を組み合わせて構築したブログシステムです。\r 記事一覧／記事詳細ページを構築し、API経由で動的に投稿データを取得しています。",
+  "main": "import_articles.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.9.0"
+  }
+}
